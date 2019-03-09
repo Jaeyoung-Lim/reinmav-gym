@@ -45,7 +45,7 @@ class Quadrotor2DFixedtool(gym.Env):
 		self.state = None
 		self.ref_pos = np.array([0.0, 0.0])
 		self.ref_vel = np.array([0.0, 0.0])
-		self.tool_pos = np.array([2.5, 2.5])
+		self.tool_pos = np.array([0.2, 0.2])
 
 		# Conditions to fail the episode
 		self.pos_threshold = 3.0
@@ -53,6 +53,7 @@ class Quadrotor2DFixedtool(gym.Env):
 
 		self.viewer = None
 		self.quadtrans = None
+		self.tooltrans = None
 		self.reftrans = None
 		self.x_range = 1.0
 		self.steps_beyond_done = None
@@ -170,7 +171,7 @@ class Quadrotor2DFixedtool(gym.Env):
 		if self.state is None: return None
 
 		state = self.state
-		x = np.array([state[0], state[1]]).flatten()
+		x = np.array([state[0], state[1]]).flatten() - np.array([self.tool_pos[0]*cos(state[2]) - self.tool_pos[1]*sin(state[2]), self.tool_pos[0]*sin(state[2]) + self.tool_pos[1]*cos(state[2])]) # Quad Position
 		theta = self.state[2]
 		quad_x = x[0]*scale+screen_width/2.0 
 		quad_y = x[1]*scale+screen_height/2.0 
