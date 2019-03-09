@@ -45,7 +45,7 @@ class Quadrotor2DFixedtool(gym.Env):
 		self.state = None
 		self.ref_pos = np.array([0.0, 0.0])
 		self.ref_vel = np.array([0.0, 0.0])
-		self.tool_pos = np.array([0.5, 0.5])
+		self.tool_pos = np.array([2.5, 2.5])
 
 		# Conditions to fail the episode
 		self.pos_threshold = 3.0
@@ -77,19 +77,19 @@ class Quadrotor2DFixedtool(gym.Env):
 		ref_pos = self.ref_pos
 		ref_vel = self.ref_vel
 
-		pos_quad = np.array([state[0], state[1]]).flatten()
+		pos = np.array([state[0], state[1]]).flatten() # Tool Position
 		att = np.array([state[2]]).flatten()
 		vel = np.array([state[3], state[4]]).flatten()
-		pos = pos_quad + np.array([self.tool_pos[0]*cos(att) - self.tool_pos[1]*sin(att), self.tool_pos[0]*sin(att) + self.tool_pos[1]*cos(att)])
+		pos_quad = pos - np.array([self.tool_pos[0]*cos(att) - self.tool_pos[1]*sin(att), self.tool_pos[0]*sin(att) + self.tool_pos[1]*cos(att)])
 
 		acc = thrust/self.mass * np.array([cos(att + pi/2), sin(att + pi/2)]) + self.g
-		pos = pos + vel * self.dt + 0.5*acc*self.dt*self.dt
+		pos_quad = pos_quad + vel * self.dt + 0.5*acc*self.dt*self.dt
 		vel = vel + acc * self.dt
 		att = att + w * self.dt
 
-		pos_quad = pos - np.array([self.tool_pos[0]*cos(att) - self.tool_pos[1]*sin(att), self.tool_pos[0]*sin(att) + self.tool_pos[1]*cos(att)])
+		pos = pos_quad + np.array([self.tool_pos[0]*cos(att) - self.tool_pos[1]*sin(att), self.tool_pos[0]*sin(att) + self.tool_pos[1]*cos(att)])
 
-		self.state = (pos_quad[0], pos_quad[1], att, vel[0], vel[1])
+		self.state = (pos[0], pos[1], att, vel[0], vel[1])
 
 		done =  linalg.norm(pos, 2) < -self.pos_threshold \
 			or  linalg.norm(pos, 2) > self.pos_threshold \
