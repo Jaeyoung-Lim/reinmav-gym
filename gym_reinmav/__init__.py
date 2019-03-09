@@ -16,6 +16,11 @@ register(
 )
 
 register(
+    id='quadrotor2d-fixedtool-v0',
+    entry_point='gym_reinmav.envs.native:Quadrotor2DFixedtool',
+)
+
+register(
     id='quadrotor3d-v0',
     entry_point='gym_reinmav.envs.native:Quadrotor3D',
 )

@@ -8,7 +8,7 @@ import numpy as np
 from numpy import linalg
 from gym.utils import seeding
 
-class Quadrotor2DFixedTool(gym.Env):
+class Quadrotor2DFixedtool(gym.Env):
 	metadata = {'render.modes': ['human']}
 	"""
 	Description:
